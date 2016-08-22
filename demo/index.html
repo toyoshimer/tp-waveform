@@ -1,0 +1,50 @@
+<!doctype html>
+<html>
+  <head>
+    <title>tp-waveform demo</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+
+    <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
+    <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+
+    <link rel="import" href="../tp-waveform.html">
+
+    <style is="custom-style" include="demo-pages-shared-styles">
+    </style>
+  </head>
+  <body>
+    <div class="vertical-section-container centered">
+      <h3>Basic tp-waveform Demo</h3>
+      <demo-snippet>
+        <template>
+          <tp-waveform id="demo"></tp-waveform>
+          <input type="file" id="file">
+          <script>
+            window.addEventListener('WebComponentsReady',
+                                    e => {
+              const demo = document.getElementById('demo');
+              const data = new Float32Array(4096);
+              for (let i = 0; i < 4096; ++i)
+                data[i] = Math.sin(i / 50);
+              demo.set(data);
+            });
+            document.getElementById("file").
+                addEventListener('change', e => {
+              const reader = new FileReader();
+              reader.onload = function () {
+                const c = new AudioContext();
+                c.decodeAudioData(this.result).then(b => {
+                  demo.set(b.getChannelData(0));
+                });
+              };
+              reader.readAsArrayBuffer(e.target.files[0]);
+            });
+          </script>
+        </template>
+      </demo-snippet>
+    </div>
+
+  </body>
+</html>

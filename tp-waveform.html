@@ -1,0 +1,111 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<!--
+`tp-waveform`
+Wave form view
+
+@demo demo/index.html 
+-->
+
+<dom-module id="tp-waveform">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <canvas id="canvas" width="[[width]]" height="[[height]]"></canvas>
+  </template>
+
+  <script>
+    'use strict';
+
+    Polymer({
+
+      is: 'tp-waveform',
+
+      properties: {
+        /* View width */
+        width: {
+          type: Number,
+          value: 320,
+        },
+        /* View height */
+        height: {
+          type: Number,
+          value: 120,
+        },
+        /* Background color */
+        bgcolor: {
+          type: String,
+          value: 'rgb(240, 240, 255)',
+        },
+        /* Color for background lines, e.g. center line */
+        bgline: {
+          type: String,
+          value: 'rgb(220, 220, 220)',
+        },
+        /* Waveform color */
+        fgcolor: {
+          type: String,
+          value: 'rgb(200, 200, 255)',
+        },
+      },
+
+      /* type {Float32Array} */
+      _data: null,
+
+      _update: function () {
+        const c = this.$.canvas.getContext('2d');
+        const width = this.get('width');
+        const height = this.get('height');
+
+        c.fillStyle = this.get('bgcolor');
+        c.fillRect(0, 0, width, height);
+
+        c.strokeStyle = this.get('bgline');
+        c.beginPath();
+        c.moveTo(0, height / 2);
+        c.lineTo(width, height / 2);
+        c.closePath();
+        c.stroke();
+
+        if (!this._data)
+          return;
+        const step = this._data.length / width;
+        let i = 0;
+        let border = 0;
+        c.strokeStyle = this.get('fgcolor');
+        c.beginPath();
+        for (let x = 0; x < width; ++x) {
+          let min = this._data[i];
+          let max = this._data[i];
+          for (border += step; i < border; ++i) {
+            if (min > this._data[i])
+              min = this._data[i];
+            if (max < this._data[i])
+              max = this._data[i]
+          }
+          c.moveTo(x, height / 2 * (1 + min));
+          c.lineTo(x, height / 2 * (1 + max));
+        }
+        c.closePath();
+        c.stroke();
+      },
+
+      attached: function () {
+        this._update();
+      },
+
+      /** Set waveform data.
+       *
+       * @param {Float32Array} data waveform data.
+       */
+      set: function (data) {
+        this._data = data;
+        this._update();
+      },
+
+    });
+  </script>
+</dom-module>
