@@ -28,7 +28,7 @@ Wave form view
         /* View width */
         width: {
           type: Number,
-          value: 320,
+          value: 0,
         },
         /* View height */
         height: {
@@ -57,8 +57,11 @@ Wave form view
 
       _update: function () {
         const c = this.$.canvas.getContext('2d');
-        const width = this.get('width');
-        const height = this.get('height');
+        if (this.get('width') === 0)
+          this.$.canvas.width = this.clientWidth;
+
+        const width = this.$.canvas.width;
+        const height = this.$.canvas.height;
 
         c.fillStyle = this.get('bgcolor');
         c.fillRect(0, 0, width, height);
