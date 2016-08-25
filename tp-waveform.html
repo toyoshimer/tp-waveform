@@ -14,7 +14,7 @@ Wave form view
         display: block;
       }
     </style>
-    <canvas id="canvas" width="[[width]]" height="[[height]]"></canvas>
+    <canvas id="canvas"></canvas>
   </template>
 
   <script>
@@ -56,12 +56,23 @@ Wave form view
       _data: null,
 
       _update: function () {
-        const c = this.$.canvas.getContext('2d');
-        if (this.get('width') === 0)
-          this.$.canvas.width = this.clientWidth;
+        let width = this.get('width');
+        let height = this.get('height');
+        if (!width)
+          width = this.clientWidth;
+        if (!height)
+          height = this.clientHeight;
 
-        const width = this.$.canvas.width;
-        const height = this.$.canvas.height;
+        const canvas = this.$.canvas;
+        const c = canvas.getContext('2d');
+
+        canvas.style.width = width + 'px';
+        canvas.style.height = height + 'px';
+        const ratio = window.devicePixelRatio;
+        width *= ratio;
+        height *= ratio;
+        canvas.width = width;
+        canvas.height = height;
 
         c.fillStyle = this.get('bgcolor');
         c.fillRect(0, 0, width, height);
