@@ -1,6 +1,6 @@
 {
   "name": "tp-waveform",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Wave form view",
   "main": "tp-waveform.html",
   "dependencies": {

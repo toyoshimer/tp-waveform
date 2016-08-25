@@ -96,6 +96,12 @@ Wave form view
         c.stroke();
       },
 
+      ready: function () {
+        window.addEventListener('resize', e => {
+          this._update();
+        }, false);
+      },
+
       attached: function () {
         this._update();
       },
